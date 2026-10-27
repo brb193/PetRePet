@@ -1,0 +1,56 @@
+<%- include('partials/header', { titulo: 'Dashboard | PetRePet' }) %>
+<%
+  const perfil = usuario.perfil.nome;
+  const menus = {
+    ADMIN: [
+      { nome: 'Perfis', url: '/perfis' },
+      { nome: 'Usuários', url: '/usuarios' },
+      { nome: 'Clientes', url: '/clientes' },
+      { nome: 'Pets', url: '/pets' },
+      { nome: 'Atendimentos', url: '/atendimentos' },
+    ],
+    RECEPCIONISTA: [
+      { nome: 'Clientes', url: '/clientes' },
+      { nome: 'Pets', url: '/pets' },
+      { nome: 'Atendimentos', url: '/atendimentos' },
+    ],
+    VETERINARIO: [
+      { nome: 'Pets', url: '/pets' },
+      { nome: 'Atendimentos', url: '/atendimentos' },
+      { nome: 'Prescrições', url: '/prescricoes' },
+    ],
+  };
+  const links = menus[perfil] || [];
+%>
+<header class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+  <div>
+    <h1 class="h3 mb-1">PetRePet</h1>
+    <p class="text-secondary mb-0">Painel de gestão da clínica</p>
+  </div>
+  <a class="btn btn-outline-secondary" href="/logout">Sair</a>
+</header>
+
+<section class="card border-0 shadow-sm mb-4">
+  <div class="card-body p-4">
+    <h2 class="h4">Olá, <%= usuario.nome %>!</h2>
+    <p class="mb-0">Perfil: <span class="badge text-bg-primary"><%= perfil %></span></p>
+  </div>
+</section>
+
+<section aria-labelledby="menu-title">
+  <h2 id="menu-title" class="h5 mb-3">Menu</h2>
+  <% if (links.length) { %>
+    <nav class="row g-3" aria-label="Navegação principal">
+      <% links.forEach((link) => { %>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <a class="card card-body h-100 text-decoration-none shadow-sm" href="<%= link.url %>">
+            <span class="fw-semibold"><%= link.nome %></span>
+          </a>
+        </div>
+      <% }) %>
+    </nav>
+  <% } else { %>
+    <p class="text-secondary">Não há opções de menu para este perfil.</p>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

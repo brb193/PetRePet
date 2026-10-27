@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('node:path');
+const webRoutes = require('./routes/webRoutes');
 
 const app = express();
 const sessionSecret = process.env.SESSION_SECRET;
@@ -28,6 +29,15 @@ app.use(
   }),
 );
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/', webRoutes);
+app.use((error, req, res, next) => {
+  if (res.headersSent) {
+    return next(error);
+  }
+
+  console.error('Erro ao processar requisição:', error);
+  return res.status(500).send('Ocorreu um erro interno. Tente novamente mais tarde.');
+});
 
 const port = process.env.PORT || 3000;
 
