@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Perfil {
+  id       Int       @id @default(autoincrement())
+  nome     String    @unique
+  usuarios Usuario[]
+}
+
+model Usuario {
+  id           Int           @id @default(autoincrement())
+  nome         String
+  email        String        @unique
+  senha        String
+  perfilId     Int
+  perfil       Perfil        @relation(fields: [perfilId], references: [id])
+  atendimentos Atendimento[] @relation("VeterinarioAtendimentos")
+}
+
+model Cliente {
+  id       Int    @id @default(autoincrement())
+  nome     String
+  cpf      String @unique
+  telefone String
+  endereco String?
+  pets     Pet[]
+}
+
+model Pet {
+  id              Int           @id @default(autoincrement())
+  nome            String
+  especie         String
+  raca            String
+  dataNascimento  DateTime?
+  clienteId       Int
+  cliente         Cliente       @relation(fields: [clienteId], references: [id])
+  atendimentos    Atendimento[]
+}
+
+model Atendimento {
+  id              Int          @id @default(autoincrement())
+  petId           Int
+  pet             Pet          @relation(fields: [petId], references: [id])
+  veterinarioId   Int
+  veterinario     Usuario      @relation("VeterinarioAtendimentos", fields: [veterinarioId], references: [id])
+  dataAtendimento DateTime     @default(now())
+  diagnostico     String?
+  status          String       @default("AGENDADO")
+  valor           Float?
+  prescricoes     Prescricao[]
+}
+
+model Prescricao {
+  id            Int         @id @default(autoincrement())
+  atendimentoId Int
+  atendimento   Atendimento @relation(fields: [atendimentoId], references: [id])
+  medicamento   String
+  dosagem       String
+  instrucoes    String?
+}
