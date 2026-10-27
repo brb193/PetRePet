@@ -1,0 +1,37 @@
+<%- include('../partials/header', { titulo: 'Atendimentos | PetRePet', usuario }) %>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0">Atendimentos</h1>
+  <% if (['ADMIN', 'RECEPCIONISTA'].includes(usuario.perfil.nome)) { %>
+    <a class="btn btn-primary" href="/atendimentos/novo">Novo agendamento</a>
+  <% } %>
+</div>
+<% if (mensagem) { %><div class="alert alert-info"><%= mensagem %></div><% } %>
+<div class="table-responsive card border-0 shadow-sm">
+  <table class="table table-striped mb-0">
+    <thead><tr><th>Data</th><th>Pet</th><th>Cliente</th><th>Veterinário</th><th>Status</th><th>Ações</th></tr></thead>
+    <tbody>
+      <% if (!atendimentos.length) { %><tr><td colspan="6" class="text-center py-4">Nenhum atendimento cadastrado.</td></tr><% } %>
+      <% atendimentos.forEach((registro) => { %>
+        <tr>
+          <td><%= registro.dataAtendimento.toLocaleString('pt-BR') %></td>
+          <td><%= registro.pet.nome %></td>
+          <td><%= registro.pet.cliente.nome %></td>
+          <td><%= registro.veterinario.nome %></td>
+          <td><span class="badge text-bg-secondary"><%= registro.status %></span></td>
+          <td class="d-flex flex-wrap gap-2">
+            <a class="btn btn-sm btn-outline-primary" href="/atendimentos/<%= registro.id %>">Detalhes</a>
+            <% if (['ADMIN', 'RECEPCIONISTA'].includes(usuario.perfil.nome)) { %>
+              <a class="btn btn-sm btn-outline-secondary" href="/atendimentos/<%= registro.id %>/agendamento/editar">Editar agendamento</a>
+            <% } %>
+            <% if (usuario.perfil.nome === 'ADMIN') { %>
+              <form method="post" action="/atendimentos/<%= registro.id %>/excluir" onsubmit="return confirm('Excluir este atendimento?')">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+              </form>
+            <% } %>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../partials/footer') %>

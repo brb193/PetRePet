@@ -4,6 +4,11 @@ const express = require('express');
 const session = require('express-session');
 const path = require('node:path');
 const webRoutes = require('./routes/webRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
+const clienteRoutes = require('./routes/clienteRoutes');
+const petRoutes = require('./routes/petRoutes');
+const atendimentoRoutes = require('./routes/atendimentoRoutes');
+const prescricaoRoutes = require('./routes/prescricaoRoutes');
 
 const app = express();
 const sessionSecret = process.env.SESSION_SECRET;
@@ -30,6 +35,11 @@ app.use(
 );
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', webRoutes);
+app.use('/', usuarioRoutes);
+app.use('/', clienteRoutes);
+app.use('/', petRoutes);
+app.use('/', atendimentoRoutes);
+app.use('/', prescricaoRoutes);
 app.use((error, req, res, next) => {
   if (res.headersSent) {
     return next(error);

@@ -1,0 +1,20 @@
+<%- include('../partials/header', { titulo: registro ? 'Editar pet | PetRePet' : 'Novo pet | PetRePet', usuario }) %>
+<div class="row justify-content-center"><div class="col-lg-7">
+  <h1 class="h3 mb-3"><%= registro ? 'Editar pet' : 'Novo pet' %></h1>
+  <% if (erro) { %><div class="alert alert-danger"><%= erro %></div><% } %>
+  <% if (!clientes.length) { %><div class="alert alert-warning">Cadastre um cliente antes de cadastrar um pet.</div><% } %>
+  <form class="card card-body border-0 shadow-sm" method="post" action="<%= registro ? `/pets/${registro.id}/editar` : '/pets' %>">
+    <div class="mb-3"><label class="form-label" for="nome">Nome</label><input class="form-control" id="nome" name="nome" value="<%= registro?.nome || '' %>" required maxlength="100"></div>
+    <div class="mb-3"><label class="form-label" for="especie">Espécie</label><input class="form-control" id="especie" name="especie" value="<%= registro?.especie || '' %>" required maxlength="80"></div>
+    <div class="mb-3"><label class="form-label" for="raca">Raça</label><input class="form-control" id="raca" name="raca" value="<%= registro?.raca || '' %>" required maxlength="100"></div>
+    <div class="mb-3"><label class="form-label" for="dataNascimento">Data de nascimento</label><input class="form-control" type="date" id="dataNascimento" name="dataNascimento" value="<%= registro?.dataNascimento ? (typeof registro.dataNascimento === 'string' ? registro.dataNascimento.slice(0, 10) : registro.dataNascimento.toISOString().slice(0, 10)) : '' %>"></div>
+    <div class="mb-4"><label class="form-label" for="clienteId">Cliente responsável</label>
+      <select class="form-select" id="clienteId" name="clienteId" required>
+        <option value="">Selecione</option>
+        <% clientes.forEach((cliente) => { %><option value="<%= cliente.id %>" <%= Number(registro?.clienteId) === cliente.id ? 'selected' : '' %>><%= cliente.nome %> — <%= cliente.cpf %></option><% }) %>
+      </select>
+    </div>
+    <div class="d-flex gap-2"><button class="btn btn-primary" type="submit" <%= clientes.length ? '' : 'disabled' %>>Salvar</button><a class="btn btn-outline-secondary" href="/pets">Cancelar</a></div>
+  </form>
+</div></div>
+<%- include('../partials/footer') %>

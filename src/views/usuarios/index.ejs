@@ -1,0 +1,26 @@
+<%- include('../partials/header', { titulo: 'Usuários | PetRePet', usuario }) %>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3">Usuários</h1>
+  <a class="btn btn-primary" href="/usuarios/novo">Novo usuário</a>
+</div>
+<% if (mensagem) { %><div class="alert alert-info"><%= mensagem %></div><% } %>
+<div class="table-responsive card border-0 shadow-sm">
+  <table class="table table-striped mb-0">
+    <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Ações</th></tr></thead>
+    <tbody>
+      <% if (!usuarios.length) { %><tr><td colspan="4" class="text-center py-4">Nenhum usuário cadastrado.</td></tr><% } %>
+      <% usuarios.forEach((registro) => { %>
+        <tr>
+          <td><%= registro.nome %></td><td><%= registro.email %></td><td><%= registro.perfil.nome %></td>
+          <td class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-primary" href="/usuarios/<%= registro.id %>/editar">Editar</a>
+            <form method="post" action="/usuarios/<%= registro.id %>/excluir" onsubmit="return confirm('Excluir este usuário?')">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../partials/footer') %>

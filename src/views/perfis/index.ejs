@@ -1,0 +1,27 @@
+<%- include('../partials/header', { titulo: 'Perfis | PetRePet', usuario }) %>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3">Perfis</h1>
+  <a class="btn btn-primary" href="/perfis/novo">Novo perfil</a>
+</div>
+<% if (mensagem) { %><div class="alert alert-info"><%= mensagem %></div><% } %>
+<div class="table-responsive card border-0 shadow-sm">
+  <table class="table table-striped mb-0">
+    <thead><tr><th>Nome</th><th>Usuários</th><th>Ações</th></tr></thead>
+    <tbody>
+      <% if (!perfis.length) { %><tr><td colspan="3" class="text-center py-4">Nenhum perfil cadastrado.</td></tr><% } %>
+      <% perfis.forEach((perfil) => { %>
+        <tr>
+          <td><%= perfil.nome %></td>
+          <td><%= perfil._count.usuarios %></td>
+          <td class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-primary" href="/perfis/<%= perfil.id %>/editar">Editar</a>
+            <form method="post" action="/perfis/<%= perfil.id %>/excluir" onsubmit="return confirm('Excluir este perfil?')">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../partials/footer') %>

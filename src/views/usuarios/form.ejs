@@ -1,0 +1,33 @@
+<%- include('../partials/header', { titulo: registro ? 'Editar usuário | PetRePet' : 'Novo usuário | PetRePet', usuario }) %>
+<div class="row justify-content-center"><div class="col-lg-7">
+  <h1 class="h3 mb-3"><%= registro ? 'Editar usuário' : 'Novo usuário' %></h1>
+  <% if (erro) { %><div class="alert alert-danger"><%= erro %></div><% } %>
+  <form class="card card-body border-0 shadow-sm" method="post" action="<%= registro ? `/usuarios/${registro.id}/editar` : '/usuarios' %>">
+    <div class="mb-3">
+      <label class="form-label" for="nome">Nome</label>
+      <input class="form-control" id="nome" name="nome" value="<%= registro?.nome || '' %>" required maxlength="120">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="email">E-mail</label>
+      <input class="form-control" type="email" id="email" name="email" value="<%= registro?.email || '' %>" required maxlength="160">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="senha">Senha <%= registro ? '(deixe em branco para manter a atual)' : '' %></label>
+      <input class="form-control" type="password" id="senha" name="senha" autocomplete="new-password" <%= registro ? '' : 'required' %>>
+    </div>
+    <div class="mb-4">
+      <label class="form-label" for="perfilId">Perfil</label>
+      <select class="form-select" id="perfilId" name="perfilId" required>
+        <option value="">Selecione</option>
+        <% perfis.forEach((perfil) => { %>
+          <option value="<%= perfil.id %>" <%= Number(registro?.perfilId) === perfil.id ? 'selected' : '' %>><%= perfil.nome %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-primary" type="submit">Salvar</button>
+      <a class="btn btn-outline-secondary" href="/usuarios">Cancelar</a>
+    </div>
+  </form>
+</div></div>
+<%- include('../partials/footer') %>

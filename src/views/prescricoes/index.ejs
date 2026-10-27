@@ -1,0 +1,19 @@
+<%- include('../partials/header', { titulo: 'Prescrições | PetRePet', usuario }) %>
+<h1 class="h3 mb-3">Prescrições</h1>
+<% if (mensagem) { %><div class="alert alert-info"><%= mensagem %></div><% } %>
+<div class="table-responsive card border-0 shadow-sm">
+  <table class="table table-striped mb-0">
+    <thead><tr><th>Atendimento</th><th>Pet</th><th>Medicamento</th><th>Dosagem</th><th>Instruções</th><th>Ação</th></tr></thead>
+    <tbody>
+      <% if (!prescricoes.length) { %><tr><td colspan="6" class="text-center py-4">Nenhuma prescrição cadastrada.</td></tr><% } %>
+      <% prescricoes.forEach((registro) => { %>
+        <tr>
+          <td><a href="/atendimentos/<%= registro.atendimentoId %>">#<%= registro.atendimentoId %></a></td>
+          <td><%= registro.atendimento.pet.nome %></td><td><%= registro.medicamento %></td><td><%= registro.dosagem %></td><td><%= registro.instrucoes || '—' %></td>
+          <td><form method="post" action="/atendimentos/<%= registro.atendimentoId %>/prescricoes/<%= registro.id %>/excluir" onsubmit="return confirm('Remover esta prescrição?')"><button class="btn btn-sm btn-outline-danger" type="submit">Remover</button></form></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../partials/footer') %>

@@ -1,0 +1,70 @@
+<%- include('../partials/header', { titulo: `Atendimento #${atendimento.id} | PetRePet`, usuario }) %>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0">Atendimento #<%= atendimento.id %></h1>
+  <a class="btn btn-outline-secondary" href="/atendimentos">Voltar à lista</a>
+</div>
+<% if (mensagem) { %><div class="alert alert-info"><%= mensagem %></div><% } %>
+<section class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <dl class="row mb-0">
+      <dt class="col-sm-3">Pet</dt><dd class="col-sm-9"><%= atendimento.pet.nome %> (<%= atendimento.pet.especie %> — <%= atendimento.pet.raca %>)</dd>
+      <dt class="col-sm-3">Cliente</dt><dd class="col-sm-9"><%= atendimento.pet.cliente.nome %> — <%= atendimento.pet.cliente.telefone %></dd>
+      <dt class="col-sm-3">Veterinário</dt><dd class="col-sm-9"><%= atendimento.veterinario.nome %></dd>
+      <dt class="col-sm-3">Data</dt><dd class="col-sm-9"><%= atendimento.dataAtendimento.toLocaleString('pt-BR') %></dd>
+      <dt class="col-sm-3">Status</dt><dd class="col-sm-9"><span class="badge text-bg-secondary"><%= atendimento.status %></span></dd>
+      <dt class="col-sm-3">Diagnóstico</dt><dd class="col-sm-9"><%= atendimento.diagnostico || 'Ainda não informado' %></dd>
+      <dt class="col-sm-3">Valor</dt><dd class="col-sm-9"><%= atendimento.valor === null ? 'Ainda não informado' : atendimento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) %></dd>
+    </dl>
+  </div>
+</section>
+
+<% if (['ADMIN', 'VETERINARIO'].includes(usuario.perfil.nome)) { %>
+  <section class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5">Atualizar dados clínicos</h2>
+      <form method="post" action="/atendimentos/<%= atendimento.id %>/clinico">
+        <div class="mb-3"><label class="form-label" for="diagnostico">Diagnóstico</label><textarea class="form-control" id="diagnostico" name="diagnostico" rows="3"><%= atendimento.diagnostico || '' %></textarea></div>
+        <div class="row">
+          <div class="col-md-6 mb-3"><label class="form-label" for="status">Status</label>
+            <select class="form-select" id="status" name="status" required>
+              <% ['AGENDADO', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO'].forEach((status) => { %><option value="<%= status %>" <%= atendimento.status === status ? 'selected' : '' %>><%= status.replace('_', ' ') %></option><% }) %>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3"><label class="form-label" for="valor">Valor (R$)</label><input class="form-control" type="number" id="valor" name="valor" min="0" step="0.01" value="<%= atendimento.valor ?? '' %>"></div>
+        </div>
+        <button class="btn btn-primary" type="submit">Salvar dados clínicos</button>
+      </form>
+    </div>
+  </section>
+<% } %>
+
+<section class="card border-0 shadow-sm">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h5 mb-0">Prescrições</h2><a href="/prescricoes" class="btn btn-sm btn-outline-secondary">Ver todas</a></div>
+    <% if (atendimento.prescricoes.length) { %>
+      <div class="list-group mb-4">
+        <% atendimento.prescricoes.forEach((prescricao) => { %>
+          <div class="list-group-item d-flex justify-content-between gap-3">
+            <div><strong><%= prescricao.medicamento %></strong> — <%= prescricao.dosagem %><% if (prescricao.instrucoes) { %><br><span class="text-secondary"><%= prescricao.instrucoes %></span><% } %></div>
+            <% if (['ADMIN', 'VETERINARIO'].includes(usuario.perfil.nome)) { %>
+              <form method="post" action="/atendimentos/<%= atendimento.id %>/prescricoes/<%= prescricao.id %>/excluir" onsubmit="return confirm('Remover esta prescrição?')"><button class="btn btn-sm btn-outline-danger" type="submit">Remover</button></form>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %><p class="text-secondary">Nenhuma prescrição cadastrada.</p><% } %>
+
+    <% if (['ADMIN', 'VETERINARIO'].includes(usuario.perfil.nome)) { %>
+      <h3 class="h6">Adicionar prescrição</h3>
+      <form method="post" action="/atendimentos/<%= atendimento.id %>/prescricoes">
+        <div class="row">
+          <div class="col-md-5 mb-3"><label class="form-label" for="medicamento">Medicamento</label><input class="form-control" id="medicamento" name="medicamento" required maxlength="160"></div>
+          <div class="col-md-4 mb-3"><label class="form-label" for="dosagem">Dosagem</label><input class="form-control" id="dosagem" name="dosagem" required maxlength="120"></div>
+          <div class="col-md-3 mb-3"><label class="form-label" for="instrucoes">Instruções</label><input class="form-control" id="instrucoes" name="instrucoes" maxlength="250"></div>
+        </div>
+        <button class="btn btn-primary" type="submit">Adicionar</button>
+      </form>
+    <% } %>
+  </div>
+</section>
+<%- include('../partials/footer') %>

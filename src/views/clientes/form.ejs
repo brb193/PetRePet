@@ -1,0 +1,13 @@
+<%- include('../partials/header', { titulo: registro ? 'Editar cliente | PetRePet' : 'Novo cliente | PetRePet', usuario }) %>
+<div class="row justify-content-center"><div class="col-lg-7">
+  <h1 class="h3 mb-3"><%= registro ? 'Editar cliente' : 'Novo cliente' %></h1>
+  <% if (erro) { %><div class="alert alert-danger"><%= erro %></div><% } %>
+  <form class="card card-body border-0 shadow-sm" method="post" action="<%= registro ? `/clientes/${registro.id}/editar` : '/clientes' %>">
+    <div class="mb-3"><label class="form-label" for="nome">Nome</label><input class="form-control" id="nome" name="nome" value="<%= registro?.nome || '' %>" required maxlength="120"></div>
+    <div class="mb-3"><label class="form-label" for="cpf">CPF</label><input class="form-control" id="cpf" name="cpf" value="<%= registro?.cpf || '' %>" required maxlength="20"></div>
+    <div class="mb-3"><label class="form-label" for="telefone">Telefone</label><input class="form-control" id="telefone" name="telefone" value="<%= registro?.telefone || '' %>" required maxlength="30"></div>
+    <div class="mb-4"><label class="form-label" for="endereco">Endereço</label><textarea class="form-control" id="endereco" name="endereco" rows="3"><%= registro?.endereco || '' %></textarea></div>
+    <div class="d-flex gap-2"><button class="btn btn-primary" type="submit">Salvar</button><a class="btn btn-outline-secondary" href="/clientes">Cancelar</a></div>
+  </form>
+</div></div>
+<%- include('../partials/footer') %>
